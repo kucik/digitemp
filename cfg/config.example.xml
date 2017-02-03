@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<configuration>
+  <db>
+    <host>localhost</host>
+    <username>dp</username>
+    <password>heslo</password>
+    <name>dp</name>
+  </db>
+  <sensors>
+  <sensor>
+    <id>in</id>
+    <name>Vnitrni</name>
+    <device>/sys/bus/w1/devices/28-/w1_slave</device>
+  </sensor>
+  <sensor>
+    <id>2</id>
+    <name>Druhy</name>
+    <device>/sys/bus/w1/devices/10-/w1_slave</device>
+  </sensor>
+  <sensor>
+    <id>3</id>
+    <name>Treti</name>
+    <device>/sys/bus/w1/devices/28-/w1_slave</device>
+  </sensor>
+  </sensors>
+</configuration>
