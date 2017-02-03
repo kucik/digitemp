@@ -22,7 +22,7 @@ def readSensors():
         if temp:
             print "{} {} = {}".format(time.strftime("%Y-%m-%d %H:%M:%S"), name, temp)
             db.InsertSensorValue(time.strftime("%Y-%m-%d %H:%M:%S"), temp, sid)
-            db.commit;
+            db.commit();
 #            db.insertdata()
 
 
