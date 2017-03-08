@@ -1,6 +1,7 @@
 import MySQLdb
 import cfgreader
-
+#because of scatter
+from plotly.graph_objs import *
 
 class dbf:
 
@@ -28,6 +29,22 @@ class dbf:
         except MySQLdb.Error, e:
             print "MySQL Error: {}".format(str(e))
             print q
+
+    def ReadScatterData(self, sensor, df, dt):
+        try:
+            self.cursor.execute("select time, sensor, val from temp_sensors s1 where time >= '{}' AND time < '{}' AND sensor = '{}'".format(df, dt, sensor))
+        except MySQLdb.Error, e:
+            print "MySQL Error: {}".format( str(e))
+            print q
+            return False
+        trace = Scatter(
+            x=[],
+            y=[]
+        )
+        for i in self.cursor.fetchall():
+            trace.x.append(i[0])
+            trace.y.append(float(i[2]))
+        return trace
 
     def commit(self):
         self.db.commit()

@@ -2,8 +2,8 @@ import os
 import glob
 import time
 
-os.system('modprobe w1-gpio')
-os.system('modprobe w1-therm')
+#os.system('modprobe w1-gpio')
+#os.system('modprobe w1-therm')
 
 max_try = 3
 #base_dir = '/sys/bus/w1/devices/'
