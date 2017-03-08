@@ -1,7 +1,7 @@
 import MySQLdb
 import cfgreader
 #because of scatter
-from plotly.graph_objs import *
+#from plotly.graph_objs import *
 
 class dbf:
 
@@ -31,8 +31,12 @@ class dbf:
             print q
 
     def ReadScatterData(self, sensor, df, dt):
+#        from plotly.graph_objs import *
+#        import plotly.graph_reference
+        from plotly.graph_objs import Scatter
+
         try:
-            self.cursor.execute("select time, sensor, val from temp_sensors s1 where time >= '{}' AND time < '{}' AND sensor = '{}'".format(df, dt, sensor))
+            self.cursor.execute("select time, sensor, val from temp_sensors s1 where readinterval = 'sec' AND time >= '{}' AND time < '{}' AND sensor = '{}'".format(df, dt, sensor))
         except MySQLdb.Error, e:
             print "MySQL Error: {}".format( str(e))
             print q
@@ -49,6 +53,44 @@ class dbf:
     def commit(self):
         self.db.commit()
 
+    def GetSensors(self):
+        q="SELECT distinct sensor FROM temp_sensors;"
+        try:
+            self.cursor.execute(q)
+        except MySQLdb.Error, e:
+            print "MySQL Error: {}".format(str(e))
+            print q
+        sensors = []
+        for i in self.cursor.fetchall():
+            sensors.append(i[0])
+        return sensors
+
+    def MakeAvg(self, sensor, t):
+        import time
+        ftimef = time.strftime("%Y-%m-%d %H:00:00",t)
+        ftimet = time.strftime("%Y-%m-%d %H:59:59",t)
+        q="SELECT AVG(val) from temp_sensors WHERE readinterval = 'sec' AND sensor = '{}' AND time > '{}' AND time < '{}';".format(sensor, ftimef, ftimet)
+#        q="SELECT AVG(val) FROM temp_sensors WHERE sensor = '{}';".format(sensor, time, time)
+#        print q
+        try:
+            self.cursor.execute(q)
+        except MySQLdb.Error, e:
+            print "MySQL Error: {}".format( str(e))
+            print q
+            return False
+        avg = self.cursor.fetchone()[0]
+        if avg != None:
+          ftimem = time.strftime("%Y-%m-%d %H:30:00",t)
+          q="INSERT INTO temp_sensors (time, sensor, readinterval, val) VALUES ('{}','{}', 'hour', '{:.2f}');".format(ftimem, sensor, avg)
+          print q
+          return
+        try:
+            self.cursor.execute(q)
+        except MySQLdb.Error, e:
+            print "MySQL Error: {}".format(str(e))
+            print q
+#         " w() - interval 1 hour, '%Y-%c-%d %H:00:00');"
+#        q="INSERT INTO temp_sensors (time - interval 30 minutes)"
 
     def close(self):
         self.db.close()

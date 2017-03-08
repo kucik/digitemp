@@ -30,6 +30,8 @@ t = time.gmtime(time.time() - (24 * 60 * 60))
 trace1 = db.ReadScatterData("in", time.strftime("%Y-%m-%d %H:%M:%S",t),  time.strftime("%Y-%m-%d 23:59:59"))
 #print 'trace read'
 
+# viz ./python2.7/dist-packages/plotly/graph_objs/graph_objs.py
+
 trace1.type = "scatter"
 trace1.fill = "tozeroy"
 
