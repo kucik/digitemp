@@ -1,6 +1,7 @@
 #import MySQLdb
 #from datetime import datetime
 #import xml.etree.ElementTree as ET
+import sys
 import time
 print "start"
 import plotly.plotly as py
@@ -18,16 +19,11 @@ config = cfg.parsecofig(config_file)
 db = dbf()
 db.init(config_file)
 
-#db = MySQLdb.connect(db_host,db_user,db_pass,db_name )
-#cursor = db.cursor()
-df = "2016-09-10 00:00:00"
-dt = "2016-09-17 00:00:00"
-#print "db init"
 data = Data([])
 
 i=0
 t = time.gmtime(time.time() - (24 * 60 * 60))
-trace1 = db.ReadScatterData("in", time.strftime("%Y-%m-%d %H:%M:%S",t),  time.strftime("%Y-%m-%d 23:59:59"))
+trace1 = db.ReadScatterData("in", time.strftime("%Y-%m-%d %H:%M:%S",t),  time.strftime("%Y-%m-%d %H:%M:%S",time.gmtime(time.time())), 'min')
 #print 'trace read'
 
 # viz ./python2.7/dist-packages/plotly/graph_objs/graph_objs.py

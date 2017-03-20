@@ -23,20 +23,20 @@ class dbf:
         if (val <= 0.0):
             return False
 
-        q="INSERT INTO temp_sensors (time, sensor, readinterval, val) VALUES ('{}','{}', 'sec', '{:.2f}');".format(date, sensor, val)
+        q="INSERT INTO temp_sensors (time, sensor, readinterval, val) VALUES ('{}','{}', 'min', '{:.2f}');".format(date, sensor, val)
         try:
             self.cursor.execute(q)
         except MySQLdb.Error, e:
             print "MySQL Error: {}".format(str(e))
             print q
 
-    def ReadScatterData(self, sensor, df, dt):
+    def ReadScatterData(self, sensor, df, dt, interval):
 #        from plotly.graph_objs import *
 #        import plotly.graph_reference
         from plotly.graph_objs import Scatter
 
         try:
-            self.cursor.execute("select time, sensor, val from temp_sensors s1 where readinterval = 'sec' AND time >= '{}' AND time < '{}' AND sensor = '{}'".format(df, dt, sensor))
+            self.cursor.execute("select time, sensor, val from temp_sensors s1 where readinterval = '{}' AND time >= '{}' AND time < '{}' AND sensor = '{}'".format(interval, df, dt, sensor))
         except MySQLdb.Error, e:
             print "MySQL Error: {}".format( str(e))
             print q
@@ -65,11 +65,25 @@ class dbf:
             sensors.append(i[0])
         return sensors
 
-    def MakeAvg(self, sensor, t):
+    def GetAvg(self, sensor, t, interval):
         import time
-        ftimef = time.strftime("%Y-%m-%d %H:00:00",t)
-        ftimet = time.strftime("%Y-%m-%d %H:59:59",t)
-        q="SELECT AVG(val) from temp_sensors WHERE readinterval = 'sec' AND sensor = '{}' AND time > '{}' AND time < '{}';".format(sensor, ftimef, ftimet)
+        gmt = time.gmtime(t)
+        tstart = t - gmt.tm_sec
+        if(interval >= 3600):
+            tstart = tstart - (gmt.tm_min * 60)
+        if(interval >= 86400):
+            tstart = tstart - (gmt.tm_hour * 3600)
+
+
+        ftimef = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(tstart))
+        ftimet = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(tstart + interval))
+
+#        ftimef = time.strftime("%Y-%m-%d %H:00:00",t)
+#        ftimef = time.strftime("%Y-%m-%d %H:00:00",t)
+#        ftimet = time.strftime("%Y-%m-%d %H:59:59",t)
+
+
+        q="SELECT AVG(val) from temp_sensors WHERE readinterval = 'min' AND sensor = '{}' AND time > '{}' AND time < '{}';".format(sensor, ftimef, ftimet)
 #        q="SELECT AVG(val) FROM temp_sensors WHERE sensor = '{}';".format(sensor, time, time)
 #        print q
         try:
@@ -82,8 +96,8 @@ class dbf:
         if avg != None:
           ftimem = time.strftime("%Y-%m-%d %H:30:00",t)
           q="INSERT INTO temp_sensors (time, sensor, readinterval, val) VALUES ('{}','{}', 'hour', '{:.2f}');".format(ftimem, sensor, avg)
-          print q
-          return
+#          print q
+#          return
         try:
             self.cursor.execute(q)
         except MySQLdb.Error, e:
