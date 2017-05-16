@@ -6,6 +6,7 @@
     <password>heslo</password>
     <name>dp</name>
   </db>
+  <hashkey>HashKeyForCookies</hashkey>
   <sensors>
   <sensor>
     <id>in</id>

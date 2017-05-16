@@ -18,7 +18,8 @@ s = db.GetSensors()
 for i in s:
     print i
 #    db.MakeAvg(i, time.strftime("%Y-%m-%d %H:00:00",t))
-    db.MakeAvg(i, t, 360)
+#    db.MakeAvg(i, t, 360)
+    db.GetAvg(i, t, 360)
 
 db.commit()
 

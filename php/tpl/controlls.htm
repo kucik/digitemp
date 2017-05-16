@@ -1,0 +1,32 @@
+<table border=0>
+<tr>
+<th> Topení </th>
+</tr><tr>
+<td>
+<form action="<$url>" method="post">
+<input type="hidden" name="action" value="heatset" />
+
+<!-- https://proto.io/freebies/onoff/ -->
+    <div class="onoffswitch">
+        <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" <$heating_on>/>
+        <label class="onoffswitch-label" for="myonoffswitch">
+            <span class="onoffswitch-inner"></span>
+            <span class="onoffswitch-switch"></span>
+        </label>
+    </div>
+</td>
+<td height=15>
+
+<div id="slider">
+        <input name = temp class="bar" type="range" min="10" max = "32" id="rangeinput" value="<$temperature>" onchange="rangevalue.value=value"/>
+        <span class="highlight"></span>
+        <output id="rangevalue"><$temperature></output>
+</div>
+
+</td>
+<td width=200 align="right">
+<input type="submit" value="OK" />
+</td>
+</tr>
+</table>
+

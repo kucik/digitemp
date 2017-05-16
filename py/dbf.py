@@ -94,7 +94,8 @@ class dbf:
             return False
         avg = self.cursor.fetchone()[0]
         if avg != None:
-          ftimem = time.strftime("%Y-%m-%d %H:30:00",t)
+#          print t
+          ftimem = time.strftime("%Y-%m-%d %H:30:00",time.gmtime(t))
           q="INSERT INTO temp_sensors (time, sensor, readinterval, val) VALUES ('{}','{}', 'hour', '{:.2f}');".format(ftimem, sensor, avg)
 #          print q
 #          return
