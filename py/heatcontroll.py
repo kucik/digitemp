@@ -18,12 +18,14 @@ db = dbf()
 db.init(config_file)
 
 GPIO.setmode(GPIO.BCM)  # set board mode to Broadcom
+GPIO.setwarnings(False)
 GPIO.setup(__heatpin, GPIO.OUT)  # set up pin
 GPIO.output(__heatpin,GPIO.LOW)
 
 def setHeat(value):
 #    print "Set heater {}".format(value)
     GPIO.output(__heatpin,value)
+    db.SetControllValue("heating","feedback",value)
 
 def checkTemperature():
     last = db.GetLastValue("in")
@@ -50,7 +52,7 @@ def checkTemperature():
         return True
 
 while(True):
-   time.sleep( 5 )
+   time.sleep( 15 )
    checkTemperature()
 
 

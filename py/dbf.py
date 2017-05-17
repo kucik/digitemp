@@ -90,6 +90,13 @@ class dbf:
             print q
         return None
 
+    def SetControllValue(self, device, param, value):
+        q="INSERT INTO controll VALUES('{}','{}','{}') ON DUPLICATE KEY UPDATE value = '{}';".format(device, param, value, value)
+        try:
+            self.cursor.execute(q)
+        except MySQLdb.Error, e:
+            print "MySQL Error: {}".format(str(e))
+            print q
 
     def GetAvg(self, sensor, t, interval):
         import time
