@@ -18,6 +18,7 @@ class dbf:
 
         self.db = MySQLdb.connect(db_host,db_user,db_pass,db_name )
         self.cursor = self.db.cursor()
+        self.db.autocommit(True)
 
     def InsertSensorValue(self, date, val, sensor):
         if (val <= 0.0):
@@ -64,6 +65,31 @@ class dbf:
         for i in self.cursor.fetchall():
             sensors.append(i[0])
         return sensors
+
+    def GetLastValue(self, sensor):
+        q="select * from temp_sensors order by time desc LIMIT 1;"
+        try:
+            self.cursor.execute(q)
+        except MySQLdb.Error, e:
+            print "MySQL Error: {}".format(str(e))
+            print q
+        return self.cursor.fetchone()
+
+    def GetControllValue(self, device, param):
+        q="select value from controll where devicename = '{}' and param = '{}';".format(device, param)
+#        print q
+        try:
+            self.cursor.execute(q)
+        except MySQLdb.Error, e:
+            print "MySQL Error: {}".format(str(e))
+            print q
+        try:
+            return self.cursor.fetchone()[0]
+        except MySQLdb.Error, e:
+            print "MySQL Error: {}".format(str(e))
+            print q
+        return None
+
 
     def GetAvg(self, sensor, t, interval):
         import time

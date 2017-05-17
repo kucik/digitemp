@@ -1,0 +1,13 @@
+[Unit]
+Description=Set up controll of heating
+
+[Service]
+Type=oneshot
+ExecStart=/home/kucik/repos/digitemp/py/heatcontroll.py
+RemainAfterExit=yes
+#ExecStop=killall heatcontroll.py
+
+[Install]
+WantedBy=multi-user.target
+
+
