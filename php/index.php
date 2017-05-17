@@ -31,12 +31,17 @@
     }
     $onoff = getControllValue("heating","onoff");
     $temp  = getControllValue("heating","temp");
+    $feedback  = getControllValue("heating","feedback");
 
     $param["url"] = $_SERVER['PHP_SELF'];
     $param["heating_on"] = "";
     if($onoff == 1)
       $param["heating_on"] = " checked";
     $param["temperature"] = $temp;
+
+    $param["heatfbimg"] = "loc_stat1.gif";
+    if($feedback == 1)
+      $param["heatfbimg"] = "loc_stat5.gif";
 
     $mainparams['controlls'] = tplParseOnce("controlls",$param);
   }
