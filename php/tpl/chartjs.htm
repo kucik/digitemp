@@ -1,0 +1,21 @@
+
+ <script type="text/javascript">
+   google.charts.setOnLoadCallback(drawChart<$chartname>);
+
+ function drawChart<$chartname>() {
+        var data = google.visualization.arrayToDataTable([
+          ['Čas', 'Uvnitr'],
+          <$chartdata>
+        ]);
+
+        var options = {
+          title: '<$chart_title>',
+          hAxis: {title: 'Year',  titleTextStyle: {color: '#333'}},
+//          vAxis: {minValue: 0}
+        };
+
+        var chart = new google.visualization.AreaChart(document.getElementById('<$chartname>_div'));
+        chart.draw(data, options);
+      }
+  </script>
+  <div id="<$chartname>_div" style="width: 900px; height: 400px;"></div>

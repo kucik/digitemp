@@ -3,6 +3,8 @@
   include("inc/db.inc.php");
   include("inc/tpl_parse.inc.php");
   include("inc/login.inc.php");
+  include("inc/graph.inc.php");
+
 
   $xml_config_file = "cfg/config.xml";
   date_default_timezone_set("UTC");
@@ -24,13 +26,16 @@
       if($_POST['onoffswitch'])
         $onoff = 1;
       $temp = $_POST['temp'];
+      $temp_night = $_POST['temp_night'];
       setControllValue("heating","onoff",$onoff);
       setControllValue("heating","temp",$temp);
+      setControllValue("heating","temp_night",$temp_night);
 #      print "onoff:".$onoff."<br>";
 #      print "temp:".$temp."<br>";
     }
     $onoff = getControllValue("heating","onoff");
     $temp  = getControllValue("heating","temp");
+    $temp_night  = getControllValue("heating","temp_night");
     $feedback  = getControllValue("heating","feedback");
 
     $param["url"] = $_SERVER['PHP_SELF'];
@@ -38,6 +43,7 @@
     if($onoff == 1)
       $param["heating_on"] = " checked";
     $param["temperature"] = $temp;
+    $param["temperature_night"] = $temp_night;
 
     $param["heatfbimg"] = "loc_stat1.gif";
     if($feedback == 1)
@@ -50,6 +56,10 @@
     $mainparams['controlls'] = tplParseOnce("login",$param);
   }
 
+  /* Google charts */
+  $mainparams['chart_daily'] = get_jsgraph("TDay", 1, "Day temperature");
+  $mainparams['chart_mon'] = get_jsgraph("TMonth",30, "Month temperature");
+  $mainparams['chart_year'] = get_jsgraph("TYear",365, "Year temperature");
 
   print tplParseOnce("main",$mainparams);
 

@@ -128,4 +128,21 @@
     $row = mysqli_fetch_array($ret);
     return $row[0];
   }
+
+  function getSensorsLog($interval, $from ) {
+    $db = db_connect(NULL);
+    $db_from = mysqli_real_escape_string($db, $from);
+    $db_interval = mysqli_real_escape_string($db, $interval);
+
+    $sql = "select time, readinterval, IFNULL(t_in, 'null'), IFNULL(t_out, 'null') from sensors_view where time > '".$db_from."' AND readinterval = '".$db_interval."'";
+    $ret = mysqli_query($db, $sql);
+    if(!$ret) {
+      die("An error when reading from DB. ". mysqli_error($db));
+    }
+
+    if(mysqli_num_rows($ret) <= 0)
+      return False;
+    
+    return mysqli_fetch_all($ret);
+  }
 ?>
