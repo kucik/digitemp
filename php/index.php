@@ -20,7 +20,9 @@
       print "Bad login!";
     }
   }
+
   if(getIsLogged()) {
+    /* Process set controlls */
     if( $_POST['action'] == "heatset" ) {
       $onoff = 0;
       if($_POST['onoffswitch'])
@@ -33,11 +35,14 @@
 #      print "onoff:".$onoff."<br>";
 #      print "temp:".$temp."<br>";
     }
+
+    /* Get controlls values */
     $onoff = getControllValue("heating","onoff");
     $temp  = getControllValue("heating","temp");
     $temp_night  = getControllValue("heating","temp_night");
     $feedback  = getControllValue("heating","feedback");
 
+    /* Show controlls */
     $param["url"] = $_SERVER['PHP_SELF'];
     $param["heating_on"] = "";
     if($onoff == 1)
