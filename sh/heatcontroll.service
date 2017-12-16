@@ -1,11 +1,12 @@
 [Unit]
 Description=Set up controll of heating
+After=ssh.service
 
 [Service]
 Type=oneshot
 ExecStart=/home/kucik/repos/digitemp/py/heatcontroll.py &
 RemainAfterExit=yes
-#ExecStop=killall heatcontroll.py
+ExecStop=killall heatcontroll.py
 
 [Install]
 WantedBy=multi-user.target

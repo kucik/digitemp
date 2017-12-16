@@ -6,9 +6,14 @@ import cfgreader as cfg
 #import datetime
 import RPi.GPIO as GPIO
 
+import os, sys
+fpid = os.fork()
+if fpid!=0:
+  # Running as daemon now. PID is fpid
+  sys.exit(0)
 
 # Configuration
-__hyst = 2.0
+__hyst = 1.0
 __heatpin = 26
 
 config_file = '/etc/heatcontroll.xml'
