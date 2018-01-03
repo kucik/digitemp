@@ -4,9 +4,9 @@ After=ssh.service
 
 [Service]
 Type=oneshot
-ExecStart=/home/kucik/repos/digitemp/py/heatcontroll.py &
+ExecStart=/home/kucik/repos/digitemp/py/heatcontroll.py & ; /home/kucik/repos/digitemp/py/mqtt_subscriber.py
 RemainAfterExit=yes
-ExecStop=killall heatcontroll.py
+ExecStop=killall heatcontroll.py; killall mqtt_subscriber.py
 
 [Install]
 WantedBy=multi-user.target

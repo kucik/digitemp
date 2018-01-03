@@ -21,7 +21,7 @@ def readSensors():
         temp = sensor.read_temp(device)
         if temp:
             print "{} {} = {}".format(time.strftime("%Y-%m-%d %H:%M:%S"), name, temp)
-            db.InsertSensorValue(time.strftime("%Y-%m-%d %H:%M:%S"), temp, sid)
+            db.InsertSensorValue(time.strftime("%Y-%m-%d %H:%M:00"), temp, sid)
             db.commit();
 #            db.insertdata()
 

@@ -22,7 +22,8 @@
       $jsdata = $jsdata."['".$dt."'";
   //    $jsdata = $jsdata.", ".$sensordata[$i][1]; //interval
       $jsdata = $jsdata.", ".$sensordata[$i][2];
-  //    $jsdata = $jsdata.", ".$sensordata[$i][3];
+//
+      $jsdata = $jsdata.", ".$sensordata[$i][3];
       $jsdata = $jsdata."]";
     } 
   

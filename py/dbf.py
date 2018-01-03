@@ -52,7 +52,11 @@ class dbf:
         return trace
 
     def commit(self):
-        self.db.commit()
+        try:
+            self.db.commit()
+        except MySQLdb.Error, e:
+            print "MySQL Error: {}".format( str(e))
+            return False
 
     def GetSensors(self):
         q="SELECT distinct sensor FROM temp_sensors;"
@@ -67,7 +71,8 @@ class dbf:
         return sensors
 
     def GetLastValue(self, sensor):
-        q="select * from temp_sensors order by time desc LIMIT 1;"
+        q="select * from temp_sensors where sensor = '{}' order by time desc LIMIT 1;".format(sensor)
+        print q
         try:
             self.cursor.execute(q)
         except MySQLdb.Error, e:
