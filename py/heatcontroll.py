@@ -19,7 +19,10 @@ __hyst = 1.0
 __heatpin = 26
 
 config_file = '/etc/heatcontroll.xml'
-config = cfg.parsecofig(config_file)
+config = cfg.Configuration(config_file)
+
+#timezone setup
+os.environ["TZ"]= config.getvalue('TimeZone')
 
 db = dbf()
 db.init(config_file)

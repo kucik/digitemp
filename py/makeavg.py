@@ -1,6 +1,8 @@
 import time
 from dbf import dbf
 import cfgreader as cfg
+import os
+os.environ["TZ"]="Europe/Prague"
 
 # Configuration
 config_file = '../cfg/config.xml'

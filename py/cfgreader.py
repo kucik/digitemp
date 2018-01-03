@@ -21,6 +21,8 @@ class Configuration():
 
     def __getRemoteSensorAdresses(self):
         return None
+    def iterfind(self, column):
+        return self.tree.iterfind(column)
 
     def getvalue( self, column):
         try:

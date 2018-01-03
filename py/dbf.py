@@ -72,7 +72,7 @@ class dbf:
 
     def GetLastValue(self, sensor):
         q="select * from temp_sensors where sensor = '{}' order by time desc LIMIT 1;".format(sensor)
-        print q
+        #print q
         try:
             self.cursor.execute(q)
         except MySQLdb.Error, e:
@@ -105,7 +105,7 @@ class dbf:
 
     def GetAvg(self, sensor, t, interval):
         import time
-        gmt = time.gmtime(t)
+        gmt = time.localtime(t)
         tstart = t - gmt.tm_sec
         if(interval >= 3600):
             tstart = tstart - (gmt.tm_min * 60)
@@ -113,8 +113,8 @@ class dbf:
             tstart = tstart - (gmt.tm_hour * 3600)
 
 
-        ftimef = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(tstart))
-        ftimet = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(tstart + interval))
+        ftimef = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(tstart))
+        ftimet = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(tstart + interval))
 
 #        ftimef = time.strftime("%Y-%m-%d %H:00:00",t)
 #        ftimef = time.strftime("%Y-%m-%d %H:00:00",t)
@@ -133,7 +133,7 @@ class dbf:
         avg = self.cursor.fetchone()[0]
         if avg != None:
 #          print t
-          ftimem = time.strftime("%Y-%m-%d %H:30:00",time.gmtime(t))
+          ftimem = time.strftime("%Y-%m-%d %H:30:00",time.localtime(t))
           q="INSERT INTO temp_sensors (time, sensor, readinterval, val) VALUES ('{}','{}', 'hour', '{:.2f}');".format(ftimem, sensor, avg)
 #          print q
 #          return

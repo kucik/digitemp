@@ -17,8 +17,8 @@ if fpid!=0:
 config_file = '/etc/heatcontroll.xml'
 config = cfg(config_file)
 
-
-s = config.getSesorByAdress("289e0c65080000a9")
+#timezone setup
+os.environ["TZ"]= config.getvalue('TimeZone')
 
 db = dbf()
 db.init(config_file)

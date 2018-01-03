@@ -2,15 +2,15 @@ import cfgreader as cfg
 import sensor
 import time
 from dbf import dbf
+import os
 
 # Configuration
 config_file = '../cfg/config.xml'
 
+config = cfg.Configuration(config_file)
 
-
-config = cfg.parsecofig(config_file)
-
-
+#timezone setup
+os.environ["TZ"]= config.getvalue('TimeZone')
 
 def readSensors():
     for sensorc in config.iterfind('sensors/sensor'):
