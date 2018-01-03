@@ -7,21 +7,39 @@
     <name>dp</name>
   </db>
   <hashkey>HashKeyForCookies</hashkey>
+  <mqtt>
+    <host>localhost</host>
+    <username>mqtt_username</username>
+    <password>mqtt_password</password>
+    <topic>sensor/temperature/#</topic>
+  </mqtt>
   <sensors>
-  <sensor>
-    <id>in</id>
-    <name>Vnitrni</name>
-    <device>/sys/bus/w1/devices/28-/w1_slave</device>
-  </sensor>
-  <sensor>
-    <id>2</id>
-    <name>Druhy</name>
-    <device>/sys/bus/w1/devices/10-/w1_slave</device>
-  </sensor>
-  <sensor>
-    <id>3</id>
-    <name>Treti</name>
-    <device>/sys/bus/w1/devices/28-/w1_slave</device>
-  </sensor>
+    <sensor>
+      <id>in</id>
+      <name>Vnitrni</name>
+      <device>/sys/bus/w1/devices/28-/w1_slave</device>
+    </sensor>
+    <sensor>
+      <id>2</id>
+      <name>Druhy</name>
+      <device>/sys/bus/w1/devices/10-/w1_slave</device>
+    </sensor>
+    <sensor>
+      <id>3</id>
+      <name>Treti</name>
+      <device>/sys/bus/w1/devices/28-/w1_slave</device>
+    </sensor>
   </sensors>
+  <RemoteSensors>
+    <sensor>
+      <id>liv1</id>
+      <adress>289e0c65080000a9</adress>
+      <name>obyvak</name>
+    </sensor>
+    <sensor>
+      <id>liv2</id>
+      <adress>28433e66080000a8</adress>
+      <name>Foo</name>
+    </sensor>
+  </RemoteSensors>
 </configuration>
