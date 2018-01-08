@@ -32,6 +32,22 @@ GPIO.setwarnings(False)
 GPIO.setup(__heatpin, GPIO.OUT)  # set up pin
 GPIO.output(__heatpin,GPIO.LOW)
 
+def getIsDayTime():
+    tcurr = time.strftime('%H:%M')
+    dtiter = config.iterfind('HeatControll/Daytime/interval')
+    for i in dtiter:
+        interval = i.text.split('-')
+        if ( interval[0].strip() <  tcurr and tcurr < interval[1].strip() ):
+            return True
+
+def getIsForce():
+    tcurr = time.strftime('%H:%M')
+    dtiter = config.iterfind('HeatControll/ForceHeat/interval')
+    for i in dtiter:
+        interval = i.text.split('-')
+        if ( interval[0].strip() <  tcurr and tcurr < interval[1].strip() ):
+            return True
+
 def getIsDay():
     hour = (int(time.strftime('%H')) +2) % 24
     if(hour >= 7 and hour <= 23 ):
@@ -49,15 +65,15 @@ def checkTemperature():
     if (time.time() - time.mktime(last[0].timetuple()) > 600):
         return False
 
-    heat_on = int(db.GetControllValue("heating","onoff"))
-    if (heat_on == None):
-        return False
+#    heat_on = int(db.GetControllValue("heating","onoff"))
+#    if (heat_on == None):
+#        return False
 
     if (heat_on == 0):
         setHeat(GPIO.LOW)
         return True
 
-    if getIsDay():
+    if getIsDayTime():
         daynight = "temp"
     else:
         daynight = "temp_night"
@@ -76,7 +92,15 @@ def checkTemperature():
 
 while(True):
    time.sleep( 15 )
-   checkTemperature()
+   heat_on = int(db.GetControllValue("heating","onoff"))
+   if (heat_on == None):
+       setHeat(GPIO.LOW)
+       continue
+
+   if getIsForce():
+       setHeat(GPIO.HIGH)
+   else:
+       checkTemperature()
 
 
 
