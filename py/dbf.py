@@ -1,5 +1,6 @@
 import MySQLdb
 import cfgreader
+import time
 #because of scatter
 #from plotly.graph_objs import *
 
@@ -58,6 +59,13 @@ class dbf:
             print "MySQL Error: {}".format( str(e))
             return False
 
+    def rollback(self):
+        try:
+            self.db.rollback()
+        except MySQLdb.Error, e:
+            print "MySQL Error: {}".format( str(e))
+            return False
+
     def GetSensors(self):
         q="SELECT distinct sensor FROM temp_sensors;"
         try:
@@ -104,14 +112,12 @@ class dbf:
             print q
 
     def GetAvg(self, sensor, t, interval):
-        import time
         gmt = time.localtime(t)
         tstart = t - gmt.tm_sec
         if(interval >= 3600):
             tstart = tstart - (gmt.tm_min * 60)
         if(interval >= 86400):
             tstart = tstart - (gmt.tm_hour * 3600)
-
 
         ftimef = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(tstart))
         ftimet = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(tstart + interval))
@@ -131,6 +137,7 @@ class dbf:
             print q
             return False
         avg = self.cursor.fetchone()[0]
+
         if avg != None:
 #          print t
           ftimem = time.strftime("%Y-%m-%d %H:30:00",time.localtime(t))
@@ -147,3 +154,16 @@ class dbf:
 
     def close(self):
         self.db.close()
+
+    def RemoveOldData(self, t):
+        t_remove = time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(t))
+        print "Removing records older than {}".format(t_remove)
+        q = "DELETE FROM temp_sensors WHERE readinterval = 'min' AND time < '{}'".format(t_remove)
+#        print q
+        try:
+            self.cursor.execute(q)
+        except MySQLdb.Error, e:
+            print "MySQL Error: {}".format(str(e))
+            print q
+
+

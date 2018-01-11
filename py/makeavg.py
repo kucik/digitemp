@@ -3,6 +3,8 @@ from dbf import dbf
 import cfgreader as cfg
 import os
 os.environ["TZ"]="Europe/Prague"
+goback_time = 20*60
+t_remove_delay = 60*60*24 * 7
 
 # Configuration
 config_file = '../cfg/config.xml'
@@ -11,21 +13,15 @@ config = cfg.parsecofig(config_file)
 db = dbf()
 db.init(config_file)
 
-#t = time.gmtime(time.time() - (60 * 60))
-t = time.time()
-#q = 
-#db.MakeAvg(sensor, time.strftime("%Y-%m-%d %H:00:00"))
+t = time.time() - goback_time
 
 s = db.GetSensors()
 for i in s:
-    print i
-#    db.MakeAvg(i, time.strftime("%Y-%m-%d %H:00:00",t))
-#    db.MakeAvg(i, t, 360)
-    db.GetAvg(i, t, 360)
+#    print i
+    db.GetAvg(i, t, 3600)
+
+# clean old records
+t_remove = time.time() - t_remove_delay
+db.RemoveOldData(t_remove)
 
 db.commit()
-
-#db.MakeAvg("blbost", time.strftime("%Y-%m-%d %H:00:00",t)) 
-#db.MakeAvg("blbost", t)
-#trace1 = db.ReadScatterData("in", time.strftime("%Y-%m-%d %H:%M:%S",t),  time.strftime("%Y-%m-%d 23:59:59"))
-#select avg(val) from temp_sensors where time > date_format(now() - interval 1 hour, '%Y-%c-%d %H:00:00');
