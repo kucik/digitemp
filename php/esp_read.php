@@ -4,9 +4,9 @@
 
   function hum_eval($val) {
 //    return "START";
-    if($val > 70)
+    if($val > 60)
       return "START";
-    if($val < 60)
+    if($val < 55)
       return "STOPX";
 
     return "STAYX";

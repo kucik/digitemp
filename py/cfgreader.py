@@ -40,7 +40,8 @@ class Configuration():
             self.__remoteAdresses[s['adress']] = s
 
     def getSesorByAdress(self, adress):
-        return self.__remoteAdresses[adress]
+        return self.__remoteAdresses.get(adress, None)
+#        return self.__remoteAdresses[adress]
 
 
 # Configuration

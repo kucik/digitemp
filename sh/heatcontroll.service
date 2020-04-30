@@ -1,12 +1,14 @@
 [Unit]
 Description=Set up controll of heating
-After=ssh.service
+After=ssh.service mysql.service
 
 [Service]
 Type=oneshot
-ExecStart=/home/kucik/repos/digitemp/py/heatcontroll.py & ; /home/kucik/repos/digitemp/py/mqtt_subscriber.py
+ExecStart=/home/kucik/repos/digitemp/py/heatcontroll.py
+# && /home/kucik/repos/digitemp/py/mqtt_subscriber.py &;
 RemainAfterExit=yes
-ExecStop=killall heatcontroll.py; killall mqtt_subscriber.py
+ExecStop=killall heatcontroll.py
+#; killall mqtt_subscriber.py
 
 [Install]
 WantedBy=multi-user.target

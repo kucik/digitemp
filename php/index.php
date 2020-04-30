@@ -63,9 +63,10 @@
 
   /* Google charts */
   $mainparams['chart_daily'] = get_jsgraph("TDay", 1, "Day temperature");
-  $mainparams['chart_mon'] = get_jsgraph("TMonth",30, "Month temperature");
+  $mainparams['waterlevel_daily'] = get_jsgraph("TDay", 20, "Water level", "waterlevel");
+/*  $mainparams['chart_mon'] = get_jsgraph("TMonth",30, "Month temperature");
   $mainparams['chart_year'] = get_jsgraph("TYear",365, "Year temperature");
-
+*/
   print tplParseOnce("main",$mainparams);
 
 ?>

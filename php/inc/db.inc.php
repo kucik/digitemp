@@ -134,7 +134,7 @@
     $db_from = mysqli_real_escape_string($db, $from);
     $db_interval = mysqli_real_escape_string($db, $interval);
 
-    $sql = "select time, readinterval, IFNULL(t_in, 'null'), IFNULL(t_liv1, 'null') from sensors_view where time > '".$db_from."' AND readinterval = '".$db_interval."'";
+    $sql = "select time, readinterval, IFNULL(t_in, 0), IFNULL(t_liv1, NULL), IFNULL(t_out1, 0) from sensors_view where time > '".$db_from."' AND readinterval = '".$db_interval."'";
     $ret = mysqli_query($db, $sql);
     if(!$ret) {
       die("An error when reading from DB. ". mysqli_error($db));
@@ -143,6 +143,23 @@
     if(mysqli_num_rows($ret) <= 0)
       return False;
     
+    return mysqli_fetch_all($ret);
+  }
+
+  function getSingleLog($interval, $from, $sensor ) {
+    $db = db_connect(NULL);
+    $db_from = mysqli_real_escape_string($db, $from);
+    $db_interval = mysqli_real_escape_string($db, $interval);
+
+    $sql = "select time, readinterval, val from temp_sensors where time > '".$db_from."' AND readinterval = '".$db_interval."' AND sensor = '".$sensor."'";
+    $ret = mysqli_query($db, $sql);
+    if(!$ret) {
+      die("An error when reading from DB. ". mysqli_error($db));
+    }
+
+    if(mysqli_num_rows($ret) <= 0)
+      return False;
+
     return mysqli_fetch_all($ret);
   }
 ?>

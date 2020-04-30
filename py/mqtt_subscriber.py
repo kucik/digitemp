@@ -33,9 +33,10 @@ def on_message(client, userdata, msg):
     #print(msg.topic+" "+str(msg.qos)+" "+str(msg.payload))
     adress = msg.topic.split('/')[-1]
     s = config.getSesorByAdress(adress)
-    #print s
-    db.InsertSensorValue(time.strftime("%Y-%m-%d %H:%M:00"), float(msg.payload), s['id'])
-    db.commit();
+#    print s
+    if s != None:
+        db.InsertSensorValue(time.strftime("%Y-%m-%d %H:%M:00"), float(msg.payload), s['id'])
+        db.commit();
 
 client = paho.Client()
 client.on_subscribe = on_subscribe

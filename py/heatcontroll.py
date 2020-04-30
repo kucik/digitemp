@@ -63,6 +63,7 @@ def checkTemperature():
     last = db.GetLastValue(controll_sensor)
     act_temp = last[3]
     if (time.time() - time.mktime(last[0].timetuple()) > 600):
+        setHeat(GPIO.LOW)
         return False
 
 #    heat_on = int(db.GetControllValue("heating","onoff"))
@@ -93,7 +94,7 @@ def checkTemperature():
 while(True):
    time.sleep( 15 )
    heat_on = int(db.GetControllValue("heating","onoff"))
-   if (heat_on == None):
+   if (heat_on == None or heat_on == 0 ):
        setHeat(GPIO.LOW)
        continue
 
