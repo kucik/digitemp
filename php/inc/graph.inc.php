@@ -7,9 +7,15 @@
 
     $interval = 'min';
     $fmt = "H:i";
+
     if($days >= 30) {
       $fmt = "Y-m-d";
       $interval = 'hour';
+    }
+
+    if($sensor == 'waterlevel') {
+      $interval = 'min';
+      $fmt = "m-d H:i";
     }
 
     if($sensor == 'all') {

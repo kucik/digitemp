@@ -37,9 +37,9 @@ client.connect(mqtt_host)
 client.loop_start()
 
 client.publish("controll/pump", "1", qos=1)
-print("pump on. Wait {}".format(sleeptime))
+#print("pump on. Wait {}".format(sleeptime))
 time.sleep(sleeptime)
 client.publish("controll/pump", "0", qos=1)
-print("pump off")
+#print("pump off")
 
 
