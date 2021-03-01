@@ -5,6 +5,7 @@ from dbf import dbf
 import cfgreader as cfg
 #import datetime
 import RPi.GPIO as GPIO
+import logging
 
 controll_sensor = "liv1"
 
@@ -32,6 +33,11 @@ GPIO.setwarnings(False)
 GPIO.setup(__heatpin, GPIO.OUT)  # set up pin
 GPIO.output(__heatpin,GPIO.LOW)
 
+logging.basicConfig(filename='/var/log/heatcontroll.log', encoding='utf-8', level=logging.INFO)
+
+class machine:
+    heatstatus=-1
+
 def getIsDayTime():
     tcurr = time.strftime('%H:%M')
     dtiter = config.iterfind('HeatControll/Daytime/interval')
@@ -54,7 +60,10 @@ def getIsDay():
         return True
     return False
 
-def setHeat(value):
+def setHeat(value, forced):
+    if(machine.heatstatus != value):
+        logging.info("{} Heat set {}. Forced: {}".format(time.strftime('%Y-%m-%d %H:%M:%S'), value, forced))
+    machine.heatstatus = value
 #    print "Set heater {}".format(value)
     GPIO.output(__heatpin,value)
     db.SetControllValue("heating","feedback",value)
@@ -63,7 +72,7 @@ def checkTemperature():
     last = db.GetLastValue(controll_sensor)
     act_temp = last[3]
     if (time.time() - time.mktime(last[0].timetuple()) > 600):
-        setHeat(GPIO.LOW)
+        setHeat(GPIO.LOW, False)
         return False
 
 #    heat_on = int(db.GetControllValue("heating","onoff"))
@@ -71,7 +80,7 @@ def checkTemperature():
 #        return False
 
     if (heat_on == 0):
-        setHeat(GPIO.LOW)
+        setHeat(GPIO.LOW, False)
         return True
 
     if getIsDayTime():
@@ -83,13 +92,16 @@ def checkTemperature():
 #    print "{} : {} : {}".format(heat_on, heat_temp, act_temp)
     # Turn on
     if(heat_temp - __hyst > act_temp):
-        setHeat(GPIO.HIGH)
+        setHeat(GPIO.HIGH, False)
         return True
 
     # Turn off
     if(heat_temp + __hyst < act_temp):
-        setHeat(GPIO.LOW)
+        setHeat(GPIO.LOW, False)
         return True
+
+
+logging.info("{} Heatcontroll start".format(time.strftime('%Y-%m-%d %H:%M:%S')))
 
 while(True):
    time.sleep( 15 )
@@ -99,7 +111,7 @@ while(True):
        continue
 
    if getIsForce():
-       setHeat(GPIO.HIGH)
+       setHeat(GPIO.HIGH, True)
    else:
        checkTemperature()
 
