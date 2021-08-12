@@ -26,6 +26,10 @@ if len(sys.argv) < 2:
 else:
     sleeptime = int(sys.argv[1])
 
+
+#print("pump on. Wait {}".format(sleeptime))
+#exit(0)
+
 client = paho.Client()
 mqtt_pwd = cfgreader.getvalue(config.tree, "mqtt/password")
 mqtt_username = cfgreader.getvalue(config.tree, "mqtt/username")
@@ -41,5 +45,5 @@ client.publish("controll/pump", "1", qos=1)
 time.sleep(sleeptime)
 client.publish("controll/pump", "0", qos=1)
 #print("pump off")
-
-
+time.sleep(4) # Wait for connection setup to complete
+client.loop_stop()
