@@ -2,15 +2,17 @@
 #include <PubSubClient.h>
 #include "config.h"
 
-#define mqtt_send_interval 300000 //ms
-//#define mqtt_send_interval 6000 //ms
+//#define mqtt_send_interval 300000 //ms
+#define mqtt_send_interval 6000 //ms
 #define TRIGGER_WIDTH 30 //ms length of transmitted signal. Original 5
+#define CHANGE_TRESHOLD 0.5
+#define LOOP_SLEEP 500
 
 // pinout for Trig and Echo of ultrasonic module
 int pTrig = 12;
 int pEcho = 14;
 // init vars
-double odezva, vzdalenost;
+double trg_echo;
 
 
 /*
@@ -31,6 +33,9 @@ const char* mqtt_user = MQTT_USER;
 const char* mqtt_password = MQTT_PASSWORD;
 const char* mqtt_wtopic = MQTT_TOPIC;
 
+char c_topic[100];
+String topic = mqtt_wtopic;
+
 void blink(int cnt, int fast) {
   int i;
   for(i = 0; i < cnt; i++) {
@@ -45,6 +50,7 @@ void setup_hc() {
   // Set up pins of  HC-SR04
   pinMode(pTrig, OUTPUT);
   pinMode(pEcho, INPUT);
+  topic.toCharArray(c_topic,100);
 }
 
 
@@ -74,6 +80,7 @@ void setup() {
   setupWifi();
   setup_hc();
   client.setServer(mqtt_server, 1883);
+  blink(2, true);
 }
 
 void reconnect_mqtt() {
@@ -86,6 +93,7 @@ void reconnect_mqtt() {
     if (client.connect("kebule", mqtt_user, mqtt_password)) {
 //      client.subscribe(mqtt_sub_topic_pump);
       Serial.println("connected");
+      blink(3, true);
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
@@ -98,6 +106,7 @@ void reconnect_mqtt() {
 
 double getdistance()
 {
+  double measure_distance = 0.0;
   // Set 2us out to GND (for safety)
   // Then set 5us output to HIGH
   // Then LOW again
@@ -107,39 +116,49 @@ double getdistance()
   delayMicroseconds(TRIGGER_WIDTH); //TODO Try 10 / 12 or 30 signal width
   digitalWrite(pTrig, LOW);
   // By pulseIne get length of pulse in us
-  odezva = pulseIn(pEcho, HIGH);
+  trg_echo = pulseIn(pEcho, HIGH);
   // Calculate distance from time
-  //vzdalenost = odezva / 58.31;
-  vzdalenost = odezva * 0.034 / 2.0;
+  //vzdalenost = trg_echo / 58.31;
+  measure_distance = trg_echo * 0.034 / 2.0;
 //  Serial.print("Vzdalenost je ");
-  Serial.print(vzdalenost);
-//  Serial.println(" cm.");
-  return vzdalenost;
+/*  Serial.print(vzdalenost);
+  Serial.println(" cm.");*/
+  return measure_distance;
 }
 
 void send_data() {
-  unsigned long currentMillis = millis(); // refresh counter variable
-  static unsigned long lastSent = 0 - mqtt_send_interval;
+//  unsigned long currentMillis = millis(); // refresh counter variable
+  static double last_sent_dist = -1.0;
 
-  if(currentMillis - lastSent >= mqtt_send_interval) {
-    char c_topic[100];
-    double dist = 190.0 - getdistance();
+  double dist = 190.0 - getdistance();
+  /* Filter out invalid value */
+  if (dist < 0.0) {
+    return;
+  }
+  /* Filter out minor changes */
+  if (abs(dist - last_sent_dist) > CHANGE_TRESHOLD) {
+
+/*    char c_topic[100];
     String topic = mqtt_wtopic;
     topic.toCharArray(c_topic,100);
+*/
+    reconnect_mqtt();
     client.publish(c_topic, String(dist).c_str(), true);
-    lastSent = currentMillis;
+//    lastSent = currentMillis;
     Serial.print("distance sent:   ");
     Serial.print(dist);
     Serial.println(" cm.");
+    last_sent_dist = dist;
+    blink(1, false);
   }
 }
 
 
 void loop() {
-  reconnect_mqtt();
+//  reconnect_mqtt();
   // Send data
   send_data();
   //delay(3000);
-  client.loop();
-  delay(mqtt_send_interval / 2);
+  //client.loop();
+  delay(LOOP_SLEEP);
 }
