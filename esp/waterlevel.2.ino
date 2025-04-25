@@ -1,10 +1,10 @@
-
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 #include "config.h"
 
 #define mqtt_send_interval 300000 //ms
 //#define mqtt_send_interval 6000 //ms
+#define TRIGGER_WIDTH 30 //ms length of transmitted signal. Original 5
 
 // pinout for Trig and Echo of ultrasonic module
 int pTrig = 12;
@@ -104,7 +104,7 @@ double getdistance()
   digitalWrite(pTrig, LOW);
   delayMicroseconds(2);
   digitalWrite(pTrig, HIGH);
-  delayMicroseconds(5);
+  delayMicroseconds(TRIGGER_WIDTH); //TODO Try 10 / 12 or 30 signal width
   digitalWrite(pTrig, LOW);
   // By pulseIne get length of pulse in us
   odezva = pulseIn(pEcho, HIGH);
@@ -128,7 +128,7 @@ void send_data() {
     topic.toCharArray(c_topic,100);
     client.publish(c_topic, String(dist).c_str(), true);
     lastSent = currentMillis;
-    Serial.print("distance sent: ");
+    Serial.print("distance sent:   ");
     Serial.print(dist);
     Serial.println(" cm.");
   }
@@ -141,5 +141,5 @@ void loop() {
   send_data();
   //delay(3000);
   client.loop();
-  delay(500);
+  delay(mqtt_send_interval / 2);
 }
